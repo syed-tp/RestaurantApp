@@ -17,7 +17,7 @@ class Restaurant(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     cost_for_two = models.DecimalField(max_digits=10, decimal_places=2)
-    rating = models.DecimalField(max_digits=2, decimal_places=1)
+    rating = models.DecimalField(max_digits=2, decimal_places=1, default=0.0)
     location = models.CharField(max_length=255)
     address= models.TextField()
     timings = models.CharField(max_length=20)

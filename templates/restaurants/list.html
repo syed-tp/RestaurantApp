@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Available Restaurants{% endblock %}
+
+{% block content %}
+
+<h2>Explore our Restaurants</h2>
+<p>Discover a variety of dining options and enjoy a delicious experience!</p>
+
+   
+            {% for restaurant in restaurants %}
+            <div class=restaurant-list>
+            <a href= "{% url 'restaurant-detail' restaurant.id %}">
+                {% if restaurant.photos.first %}
+                    <img src ="{{ restaurant.photos.first.image.url }}" alt="{{ restaurant.title}} photo">
+                {% else %}
+                    <img src= "{% static 'img/default_restaurant.jpg' %}" alt="{{ restaurant.title }} photo">
+                {% endif %}
+
+                <div class='res-attributes'>
+                    <h3> {{ restaurant.title }} </h3>
+                    <p> Rating : {{ restaurant.rating }} </p>
+                    <p> Cost for 2 : {{ restaurant.cost_for_two }} </p>
+                    <p> Location : {{ restaurant.location }}</p>
+                    <p> {{ restaurant.address }}</p>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+            <h3>No restaurants available at the moment. Please check back later!</h3>
+        {% endfor %}
+
+
+
+
+{% endblock %}

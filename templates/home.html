@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div id="welcome-note">
+        <h2>Welcome to</h2>
+            <h1> <i>Khana Kazhana</i></h1>
+    </div>
+    <div id="explore">
+        <h3>Explore a Wide Range of Foods from a Variety of Restaurants!</h3>
+        <a href="{% url 'restaurant-list' %}" class="explore-btn">Explore Restaurants</a>
+        <p>Join us in celebrating the joy of dining with friends and family, 
+            and let Khana Kazhana be your guide to the perfect meal every time!</p>
+        
+    </div>
+{% endblock %}

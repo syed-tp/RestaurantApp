@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Khana Kazhana{% endblock %}</title>
+        <link rel="stylesheet" href="{% static 'css/base.css' %}">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=New+Amsterdam&family=Playwrite+AU+NSW:wght@100..400&display=swap" rel="stylesheet">
+        
+    </head>
+    <body>
+        <header>
+            <nav>
+                <div class="logo">
+                    <a href="{% url 'home' %}">Khana Kazhana</a>
+                </div>
+                <ul>
+                    <li><a href="{% url 'restaurant-list' %}">Restaurants</a></li>
+                    {% if user.is_authenticated %}
+                        <li>
+                            <a href="#">{{ user.username }}</a>
+                            <ul class="dropdown">
+                                <li><a href="#">Profile</a></li>
+                                <li><a href="#">Settings</a></li>
+                                <li><a href="#">Logout</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li><a href="#">Login</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </header>
+
+        <div class="content">
+            {% block content %}
+            {% endblock %}
+        </div>
+
+        <footer>
+            <p>&copy; 2024 Khana Kazhana. rights details</p>
+        </footer>
+
+    </body>
+</html>
