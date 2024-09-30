@@ -168,25 +168,25 @@ h3.no-restaurants {
 }
 
 #filter-section {
-    position: relative; /* Allow absolute positioning within this section */
-    margin-bottom: 20px; /* Add spacing below the filter section */
+    position: relative; 
+    margin-bottom: 20px; 
 }
 
 #toggle-container {
-    position: absolute; /* Position the toggle container */
-    top: 10px; /* Space from the top */
-    right: 10px; /* Space from the right */
+    position: absolute; 
+    top: 10px;
+    right: 10px; 
 }
 
 .switch {
     position: relative;
     display: inline-block;
-    width: 50px; /* Reduced width of the switch */
-    height: 24px; /* Reduced height of the switch */
+    width: 50px; 
+    height: 24px; 
 }
 
 .switch input {
-    opacity: 0; /* Hide the default checkbox */
+    opacity: 0; 
     width: 0;
     height: 0;
 }
@@ -198,30 +198,30 @@ h3.no-restaurants {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc; /* Background color when off */
-    transition: .4s; /* Smooth transition */
-    border-radius: 24px; /* Rounded corners */
+    background-color: #ccc; 
+    transition: .4s; 
+    border-radius: 24px; 
 }
 
 .slider:before {
     position: absolute;
     content: "";
-    height: 20px; /* Height of the toggle circle */
-    width: 20px; /* Width of the toggle circle */
-    left: 2px; /* Space from the left */
-    bottom: 2px; /* Space from the bottom */
-    background-color: white; /* Color of the toggle circle */
-    transition: .4s; /* Smooth transition */
-    border-radius: 50%; /* Make it a circle */
+    height: 20px; 
+    width: 20px; 
+    left: 2px;    
+    bottom: 2px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
 }
 
-/* When the checkbox is checked, change the background and position of the toggle */
+
 input:checked + .slider {
-    background-color: #4CAF50; /* Color when toggled on */
+    background-color: #4CAF50; 
 }
 
 input:checked + .slider:before {
-    transform: translateX(25px); /* Move circle to the right */
+    transform: translateX(25px); 
 }
 
 .label {
@@ -229,4 +229,67 @@ input:checked + .slider:before {
     font-size: 18px; 
     margin-right: 5px;
     font-weight: bold;
+}
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px; /* Smaller font size */
+}
+
+.step-links {
+    display: flex;
+    align-items: center;
+}
+
+.current {
+    margin: 0 10px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #043a75;
+    padding: 5px 10px; /* Smaller padding */
+    border-radius: 3px; /* Smaller rounded corners */
+}
+
+.step-links a {
+    text-decoration: none;
+    color: #043a75;
+    padding: 5px 10px; /* Smaller padding */
+    border: 1px solid #043a75; /* Thinner border */
+    border-radius: 3px;
+    margin: 0 3px; /* Smaller margin between links */
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+}
+
+.step-links a:hover {
+    background-color: #043a75;
+    color: #ffffff;
+    transform: translateY(-1px); /* Slightly less lift effect */
+}
+
+.step-links a.active {
+    background-color: #043a75;
+    color: #fff;
+    border-color: #043a75;
+}
+
+.step-links a:disabled {
+    color: #ccc;
+    border-color: #ccc;
+    cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+    .pagination {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .step-links a {
+        margin-bottom: 5px; /* Smaller spacing between links */
+    }
 }

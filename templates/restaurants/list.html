@@ -22,29 +22,45 @@
 
 
 
-            {% for restaurant in restaurants %}
-            <div class=restaurant-list>
-            <a href= "{% url 'restaurant-detail' restaurant.id %}">
-                {% if restaurant.photos.first %}
-                    <img src ="{{ restaurant.photos.first.image.url }}" alt="{{ restaurant.title}} photo">
-                {% else %}
-                    <img src= "{% static 'img/default_restaurant.jpg' %}" alt="{{ restaurant.title }} photo">
-                {% endif %}
+{% if restaurants %}
+{% for restaurant in restaurants %}
+    <div class="restaurant-list">
+        <a href="{% url 'restaurant-detail' restaurant.id %}">
+            {% if restaurant.photos.first %}
+                <img src="{{ restaurant.photos.first.image.url }}" alt="{{ restaurant.title }} photo">
+            {% else %}
+                <img src="{% static 'img/default_restaurant.jpg' %}" alt="{{ restaurant.title }} photo">
+            {% endif %}
+            <div class='res-attributes'>
+                <h3>{{ restaurant.title }}</h3>
+                <p>Rating: {{ restaurant.rating }}</p>
+                <p>Cost for 2: {{ restaurant.cost_for_two }}</p>
+                <p>Location: {{ restaurant.location }}</p>
+                <p>{{ restaurant.address }}</p>
+            </div>
+        </a>
+    </div>
+{% endfor %}
+{% else %}
+<h3>No restaurants available at the moment. Please check back later!</h3>
+{% endif %}
 
-                <div class='res-attributes'>
-                    <h3> {{ restaurant.title }} </h3>
-                    <p> Rating : {{ restaurant.rating }} </p>
-                    <p> Cost for 2 : {{ restaurant.cost_for_two }} </p>
-                    <p> Location : {{ restaurant.location }}</p>
-                    <p> {{ restaurant.address }}</p>
-                </div>
-            </a>
-        </div>
-        {% empty %}
-            <h3>No restaurants available at the moment. Please check back later!</h3>
-        {% endfor %}
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
 
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
 
-
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
 
 {% endblock %}
