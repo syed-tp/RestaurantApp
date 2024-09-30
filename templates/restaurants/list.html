@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Available Restaurants{% endblock %}
+
+{% block content %}
+
+<div id="filter-section">
+    
+    <div id="toggle-container">
+        <span class="label">Veg </span>
+        <label class="switch">  
+              
+            <input type="checkbox" id="veg-toggle" onchange="filterVegRestaurants()">
+            <span class="slider"></span>
+        </label>
+        
+    </div>
+</div>
+
+<h2>Explore our Restaurants</h2>
+<p>Discover a variety of dining options and enjoy a delicious experience!</p>
+
+
+
+{% if restaurants %}
+{% for restaurant in restaurants %}
+    <div class="restaurant-list">
+        <a href="{% url 'restaurant-detail' restaurant.id %}">
+            {% if restaurant.photos.first %}
+                <img src="{{ restaurant.photos.first.image.url }}" alt="{{ restaurant.title }} photo">
+            {% else %}
+                <img src="{% static 'img/default_restaurant.jpg' %}" alt="{{ restaurant.title }} photo">
+            {% endif %}
+            <div class='res-attributes'>
+                <h3>{{ restaurant.title }}</h3>
+                <p>Rating: <b>{{ restaurant.rating }}</b></p>
+                <p>Cost for Two:<b> Rs. {{ restaurant.cost_for_two }}</b></p>
+                <p>Location: {{ restaurant.location }}</p>
+                <p>{{ restaurant.address }}</p>
+            </div>
+        </a>
+    </div>
+{% endfor %}
+{% else %}
+<h3>No restaurants available at the moment. Please check back later!</h3>
+{% endif %}
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock %}

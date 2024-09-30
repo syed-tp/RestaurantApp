@@ -3,9 +3,11 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from .models import Restaurant, RestaurantPhoto, Dish, Review, VisitedRestaurant, BookmarkedRestaurant
 from django.core.exceptions import ValidationError
+
+from django.urls import reverse
 # Create your tests here.
 
-
+#TEST FOR MODELS
 class RestaurantModelTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='owner', password='password123')
@@ -190,3 +192,55 @@ class BookmarkedRestaurantModelTest(TestCase):
     def test_str_method(self):
         """Testing the string representation of the bookmarked restaurant."""
         self.assertEqual(str(self.bookmark), f'{self.user.username} - {self.restaurant.title}')
+
+
+#TEST FOR VIEWS
+class RestaurantListViewTests(TestCase):
+    
+    def setUpTestData():
+        user = User.objects.create(username='TestUser1', password='password')
+        Restaurant.objects.create(owner=user, title="Restaurant 1", rating=4.5, cost_for_two=500, location="Location 1", address="Address 1")
+        Restaurant.objects.create(owner=user, title="Restaurant 2", rating=3.5, cost_for_two=800, location="Location 2", address="Address 2")
+        Restaurant.objects.create(owner=user, title="Restaurant 3", rating=5.0, cost_for_two=600, location="Location 3", address="Address 3")
+
+    def test_restaurant_list_view_url_exists_at_desired_location(self):
+        response = self.client.get('/restaurants/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_restaurant_list_view_uses_correct_template(self):
+        response = self.client.get(reverse('restaurant-list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'restaurants/list.html')
+
+    def test_restaurant_list_view_context(self):
+        response = self.client.get(reverse('restaurant-list'))
+        self.assertEqual(len(response.context['restaurants']), 3)
+
+    def test_restaurant_list_view_empty_message(self):
+        Restaurant.objects.all().delete()
+        response = self.client.get(reverse('restaurant-list'))
+        self.assertContains(response, "No restaurants available at the moment. Please check back later!")
+
+class RestaurantDetailViewTests(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        user= User.objects.create(username='Tuser1', password='password')
+        cls.restaurant = Restaurant.objects.create(owner=user, title="Restaurant 1", rating=4.5, cost_for_two=500, location="Location 1", address="Address 1")
+
+    def test_restaurant_detail_view_url_exists_at_desired_location(self):
+        response = self.client.get(f'/restaurants/{self.restaurant.id}/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_restaurant_detail_view_uses_correct_template(self):
+        response = self.client.get(reverse('restaurant-detail', args=[self.restaurant.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'restaurants/detail.html')
+
+    def test_restaurant_detail_view_context(self):
+        response = self.client.get(reverse('restaurant-detail', args=[self.restaurant.id]))
+        self.assertEqual(response.context['restaurant'].title, self.restaurant.title)
+
+    def test_restaurant_detail_view_invalid_id(self):
+        response = self.client.get(reverse('restaurant-detail', args=[999]))  # Non-existent restaurant ID
+        self.assertEqual(response.status_code, 404)

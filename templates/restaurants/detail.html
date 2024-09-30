@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div id="filter-section">
+    
+    <div id="toggle-container">
+        <span class="label">Veg </span>
+        <label class="switch">
+              
+            <input type="checkbox" id="veg-toggle" onchange="filterVegDishes()">
+            <span class="slider"></span>
+        </label>
+        
+    </div>
+</div>
+
+
+
+    <h2>Menu for {{ restaurant.title }}</h2>
+    {% for dish in menu_items %}
+        <div class=restaurant-list>
+            {% if dish.image %}
+                <img src="{{ dish.image.url }}" alt="{{ restaurant.title }} photo">
+            {% else %}
+                <img src="{% static 'img/default_dish.jpg' %}" alt="{{ restaurant.title }} photo">
+            {% endif %}
+            
+            <div class='res-attributes'>
+                <h3>{{ dish.name }}</h3>
+                <p> <b>Rs.{{ dish.price }}</b></p>
+                <p>{{ dish.get_cuisine_type_display }}</p>
+                <div class=foodtype>
+                    {% if dish.is_veg %}
+                        <img src="{% static 'img/veg.png' %}" alt="Vegetarian" title="Vegetarian">
+                    {% else %}
+                        <img src="{% static 'img/nonveg.png' %}" alt="Non-Vegetarian" title="Non-Vegetarian">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>No dishes available at the moment.</p>
+    {% endfor %}
+
+{% endblock %}
+
