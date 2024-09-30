@@ -4,10 +4,24 @@
 
 {% block content %}
 
+<div id="filter-section">
+    
+    <div id="toggle-container">
+        <span class="label">Veg </span>
+        <label class="switch">  
+              
+            <input type="checkbox" id="veg-toggle" onchange="filterVegRestaurants()">
+            <span class="slider"></span>
+        </label>
+        
+    </div>
+</div>
+
 <h2>Explore our Restaurants</h2>
 <p>Discover a variety of dining options and enjoy a delicious experience!</p>
 
-   
+
+
             {% for restaurant in restaurants %}
             <div class=restaurant-list>
             <a href= "{% url 'restaurant-detail' restaurant.id %}">
