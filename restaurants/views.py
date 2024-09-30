@@ -21,7 +21,6 @@ class RestaurantListView(ListView):
 
     def get_queryset(self):
         queryset = Restaurant.objects.all().order_by('id')
-        # return Paginator(queryset, 2)
         return queryset
     
 class RestaurantDetailView(DetailView):
