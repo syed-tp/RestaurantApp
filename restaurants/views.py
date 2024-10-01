@@ -44,6 +44,10 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
     form_class = ReviewForm
     template_name = 'restaurants/review_form.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        self.restaurant = get_object_or_404(Restaurant, pk=self.kwargs['id'])
+        return super().dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.instance.restaurant_id = self.kwargs['id']
