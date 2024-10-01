@@ -3,7 +3,11 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from .models import Restaurant, RestaurantPhoto, Dish, Review, VisitedRestaurant, BookmarkedRestaurant
 from django.core.exceptions import ValidationError
+from .forms import ReviewForm
 
+from django.urls import reverse
+
+from django.test import TestCase
 from django.urls import reverse
 # Create your tests here.
 
@@ -244,3 +248,54 @@ class RestaurantDetailViewTests(TestCase):
     def test_restaurant_detail_view_invalid_id(self):
         response = self.client.get(reverse('restaurant-detail', args=[999]))  # Non-existent restaurant ID
         self.assertEqual(response.status_code, 404)
+
+
+#TEST FOR REVIEWS VIEW
+
+class ReviewCreateViewTests(TestCase):
+    
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.restaurant = Restaurant.objects.create(owner= self.user, title='Test Restaurant', rating=4.5, cost_for_two=500, location="Location 1", address="Address 1")
+        self.client.login(username='testuser', password='testpass')
+
+    def test_create_review_success(self):
+        url = reverse('add-review', kwargs={'id': self.restaurant.id})
+        data = {
+            'rating': 4.5,
+            'comment': 'Great food!',
+        }
+        response = self.client.post(url, data)
+        
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Review.objects.count(), 1)
+        self.assertEqual(Review.objects.first().comment, 'Great food!')
+        
+    def test_valid_rating(self):
+        response = self.client.post(reverse('add-review', args=[self.restaurant.id]), {
+            'rating': 4.0, 
+            'comment': 'Nice food!'
+        })
+        self.assertRedirects(response, reverse('restaurant-detail', args=[self.restaurant.id]))
+
+    def test_reviewForm_without_comment(self):
+        response = self.client.post(reverse('add-review', args=[self.restaurant.id]), {
+            'rating': 4.0,  
+            'comment': ''
+        })
+        self.assertEqual(response.status_code, 200)
+        form = response.context['form']
+
+        self.assertTrue(form.errors)
+        self.assertIn('This field is required.', form.errors['comment'])
+
+    def test_create_review_without_login(self):
+        url = reverse('add-review', kwargs={'id': self.restaurant.id})
+        initial_review_count = Review.objects.count()
+        data = {
+            'rating': 4.0,
+            'comment': 'Nice place!'
+        }
+        #WE DONT HAVE A LOGIN PAGE YET, SO WE CHECK THAT REVIEW NOT AFFECTED TO DB
+        self.assertEqual(Review.objects.count(), initial_review_count)
+        
