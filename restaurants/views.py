@@ -50,7 +50,7 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form): 
         form.instance.user = self.request.user
-        form.instance.restaurant_id = self.restaurant
+        form.instance.restaurant = self.restaurant
         return super().form_valid(form)
     
     def get_context_data(self, **kwargs):
