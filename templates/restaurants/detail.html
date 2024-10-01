@@ -44,34 +44,36 @@
         <p>No dishes available at the moment.</p>
     {% endfor %}
 
-    
-    <div class= "reviews">
+    <div class="reviews">
         <a href="{% url 'add-review' restaurant.id %}">Add Review</a>
         <h2>Reviews</h2>
         <ul>
             {% for review in restaurant.reviews.all %}
-                <div class = "review-list">
+                <div class="review-list">
                     <li>
-                        <strong>{{ review.user.username }}</strong> 
+                        <strong>{{ review.user.username }}</strong>
                         <p><b>{{ review.rating }}</b></p>
                         <span class="star-rating">
-                            {% for i in "12345" %}
-                                {% if i|add:0 <= review.rating %}
-                                    ★
-                                {% else %}
-                                    ☆
-                                {% endif %}
-                            {% endfor %}
+                                {% for i in "12345" %}
+                                    {% with rating_value=review.rating %}
+                                        {% if rating_value >= forloop.counter %}
+                                            <i class="fas fa-star"></i>
+                                        {% elif rating_value > forloop.counter|add:-1 and rating_value < forloop.counter|add:0 %}  <!-- Check for half star -->
+                                            <i class="fas fa-star-half-alt"></i>
+                                        {% else %}
+                                            <i class="far fa-star"></i>
+                                        {% endif %}
+                                    {% endwith %}
+                                {% endfor %}
                         </span>
-                        </p>
                         <p>{{ review.comment }}</p>
                     </li>
                 </div>
             {% empty %}
-                    <li>No reviews yet.</li>
+                <li>No reviews yet.</li>
             {% endfor %}
         </ul>
     </div>
-
+        
 {% endblock %}
 
