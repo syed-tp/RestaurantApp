@@ -293,3 +293,140 @@ input:checked + .slider:before {
         margin-bottom: 5px; /* Smaller spacing between links */
     }
 }
+
+.reviews {
+    margin: 20px 0; 
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+}
+
+.reviews h2 {
+    font-size: 24px; 
+    margin-bottom: 15px;
+    color: #043a75;
+}
+
+.reviews a {
+    display: inline-block; 
+    margin-bottom: 15px; 
+    padding: 10px 15px; 
+    background-color: #ff1414; 
+    color: #fff; 
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.reviews a:hover {
+    background-color: #fc00009f; 
+    transform: translateY(-1px);
+}
+
+.review-list {
+    margin-bottom: 10px;
+    padding: 10px; 
+    border: 1px solid #ddd; 
+    border-radius: 5px; 
+    background-color: #ffffff; 
+}
+
+.review-list strong {
+    color: #043a75; 
+}
+
+.review-list p {
+    margin: 5px 0 0; 
+    font-size: 16px; 
+    color: #333; 
+}
+
+.review-list li {
+    list-style-type: none; 
+}
+
+.star-rating {
+    color: gold; 
+    font-size: 16px; 
+    margin-left: 5px; 
+}
+
+/* FORMS STYLE */
+.review-form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+.review-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.review-form label {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+
+.review-form input[type="text"],
+.review-form textarea,
+.review-form select {
+    width: 95%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.review-form input[type="text"]:focus,
+.review-form textarea:focus,
+.review-form select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+
+.submit-btn {
+    padding: 12px 20px;
+    background-color: #ff1414;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.submit-btn:hover {
+    background-color:#ff1414 ;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 15px;
+    color: #043a75;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.back-link:hover {
+    color: #ff1414;
+}
+
+.review-form-container h2 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #043a75;
+}
