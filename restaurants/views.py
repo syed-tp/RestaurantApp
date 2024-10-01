@@ -50,16 +50,16 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form): 
         form.instance.user = self.request.user
-        form.instance.restaurant_id = self.kwargs['id']
+        form.instance.restaurant_id = self.restaurant
         return super().form_valid(form)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['restaurant'] = get_object_or_404(Restaurant, pk=self.kwargs['id'])
+        context['restaurant'] = self.restaurant
         return context
 
     def get_success_url(self):
-        return reverse('restaurant-detail', kwargs={'pk': self.object.restaurant.pk})
+        return reverse('restaurant-detail', kwargs={'pk': self.restaurant.pk})
     
     
     
