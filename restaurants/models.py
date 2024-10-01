@@ -69,8 +69,6 @@ class Dish(models.Model):
     
 
 class Review(models.Model):
-
-    
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     restaurant = models.ForeignKey(Restaurant, related_name='reviews', on_delete=models.CASCADE)
     rating = models.FloatField(
@@ -80,7 +78,6 @@ class Review(models.Model):
         ],
         help_text="Rating must be between 1.0 and 5.0."
     )
-    # rating = models.DecimalField(max_digits=2, decimal_places=1)
     comment = models.TextField()
 
     def __str__(self):

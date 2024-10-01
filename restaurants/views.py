@@ -17,6 +17,7 @@ from .forms import ReviewForm
 class HomeView(TemplateView):
     template_name ='home.html'
 
+
 class RestaurantListView(ListView):
     model = Restaurant
     template_name = 'restaurants/list.html'
@@ -27,11 +28,11 @@ class RestaurantListView(ListView):
         queryset = Restaurant.objects.all().order_by('id')
         return queryset
     
+
 class RestaurantDetailView(DetailView):
     model = Restaurant
     template_name = 'restaurants/detail.html'
     context_object_name = 'restaurant'
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

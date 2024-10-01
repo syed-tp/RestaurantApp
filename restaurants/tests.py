@@ -35,6 +35,7 @@ class RestaurantModelTest(TestCase):
         """Testing the string representation of the restaurant from magic method."""
         self.assertEqual(str(self.restaurant), 'Test Restaurant')
 
+
 class RestaurantPhotoModelTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='owner', password='password123')
@@ -61,6 +62,7 @@ class RestaurantPhotoModelTest(TestCase):
     def test_str_method(self):
         """Test the string representation of the restaurant photo."""
         self.assertEqual(str(self.photo), f'Photo of {self.restaurant.title}')
+
 
 class DishModelTest(TestCase):
     def setUp(self):
@@ -91,6 +93,7 @@ class DishModelTest(TestCase):
         """Testing the string representation of the dish."""
         self.assertEqual(str(self.dish), f'Test Dish of {self.restaurant.title}')
 
+
 class ReviewModelTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='owner', password='password123')
@@ -119,14 +122,11 @@ class ReviewModelTest(TestCase):
         self.restaurant.update_rating()
         self.assertEqual(self.restaurant.rating, 4.2)  # (4.0 + 4.5)/2 = 4.25 => Rounds to 4.2
 
-    
         Review.objects.create(user=self.user, restaurant=self.restaurant, rating=4.9, comment='Delicious!')
-    
-    
+       
         self.restaurant.update_rating()
         self.assertEqual(self.restaurant.rating, 4.5) #(4.0 + 4.5 + 4.9) / 3 = 4.4667 => Rounds to 4.5 
 
-    
         Review.objects.create(user=self.user, restaurant=self.restaurant, rating=4.4, comment='Tasty!')
         
         self.restaurant.update_rating()
@@ -150,7 +150,6 @@ class ReviewModelTest(TestCase):
             review.full_clean()
 
     
-
 class VisitedRestaurantModelTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='owner', password='password123')
@@ -173,6 +172,7 @@ class VisitedRestaurantModelTest(TestCase):
     def test_str_method(self):
         """Testing the string representation of the visited restaurant."""
         self.assertEqual(str(self.visit), f'{self.user.username} - {self.restaurant.title}')
+
 
 class BookmarkedRestaurantModelTest(TestCase):
     def setUp(self):
@@ -224,6 +224,7 @@ class RestaurantListViewTests(TestCase):
         Restaurant.objects.all().delete()
         response = self.client.get(reverse('restaurant-list'))
         self.assertContains(response, "No restaurants available at the moment. Please check back later!")
+
 
 class RestaurantDetailViewTests(TestCase):
 
