@@ -44,5 +44,34 @@
         <p>No dishes available at the moment.</p>
     {% endfor %}
 
+    
+    <div class= "reviews">
+        <a href="{% url 'add-review' restaurant.id %}">Add Review</a>
+        <h2>Reviews</h2>
+        <ul>
+            {% for review in restaurant.reviews.all %}
+                <div class = "review-list">
+                    <li>
+                        <strong>{{ review.user.username }}</strong> 
+                        <p><b>{{ review.rating }}</b></p>
+                        <span class="star-rating">
+                            {% for i in "12345" %}
+                                {% if i|add:0 <= review.rating %}
+                                    ★
+                                {% else %}
+                                    ☆
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                        </p>
+                        <p>{{ review.comment }}</p>
+                    </li>
+                </div>
+            {% empty %}
+                    <li>No reviews yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
 {% endblock %}
 

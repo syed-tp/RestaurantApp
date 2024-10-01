@@ -1,11 +1,15 @@
-from typing import Any
 from django.db.models.query import QuerySet
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from django.views.generic import TemplateView, ListView, DetailView
-from .models import Restaurant, RestaurantPhoto, Dish   
+from .models import Restaurant, RestaurantPhoto, Dish, Review
 
 from django.core.paginator import Paginator
+
+from django.views.generic.edit import CreateView
+from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .forms import ReviewForm
 
 # Create your views here.
 
@@ -34,5 +38,24 @@ class RestaurantDetailView(DetailView):
         context["menu_items"] = self.object.menu_items.filter(is_deleted=False) 
         return context
     
-   
+
+class ReviewCreateView(LoginRequiredMixin, CreateView):
+    model = Review
+    form_class = ReviewForm
+    template_name = 'restaurants/review_form.html'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.restaurant_id = self.kwargs['id']
+        return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['restaurant'] = get_object_or_404(Restaurant, pk=self.kwargs['id'])
+        return context
+
+    def get_success_url(self):
+        return reverse('restaurant-detail', kwargs={'pk': self.object.restaurant.pk})
+    
+    
     
