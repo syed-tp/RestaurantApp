@@ -9,6 +9,7 @@ from django.urls import reverse
 
 from django.test import TestCase
 from django.urls import reverse
+from .filters import RestaurantFilter
 # Create your tests here.
 
 #TEST FOR MODELS
@@ -200,12 +201,16 @@ class BookmarkedRestaurantModelTest(TestCase):
 
 #TEST FOR VIEWS
 class RestaurantListViewTests(TestCase):
-    
-    def setUpTestData():
-        user = User.objects.create(username='TestUser1', password='password')
-        Restaurant.objects.create(owner=user, title="Restaurant 1", rating=4.5, cost_for_two=500, location="Location 1", address="Address 1")
-        Restaurant.objects.create(owner=user, title="Restaurant 2", rating=3.5, cost_for_two=800, location="Location 2", address="Address 2")
-        Restaurant.objects.create(owner=user, title="Restaurant 3", rating=5.0, cost_for_two=600, location="Location 3", address="Address 3")
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='TestUser1', password='password')
+        Restaurant.objects.create(owner=cls.user, title="Restaurant 1", rating=4.5, cost_for_two=500, location="Location 1", address="Address 1")
+        Restaurant.objects.create(owner=cls.user, title="Restaurant 2", rating=3.5, cost_for_two=800, location="Location 2", address="Address 2")
+        Restaurant.objects.create(owner=cls.user, title="Restaurant 3", rating=5.0, cost_for_two=600, location="Location 3", address="Address 3")
+
+    def setUp(self):
+        self.client.login(username='TestUser1', password='password')
 
     def test_restaurant_list_view_url_exists_at_desired_location(self):
         response = self.client.get('/restaurants/')
@@ -300,3 +305,125 @@ class ReviewCreateViewTests(TestCase):
         #WE DONT HAVE A LOGIN PAGE YET, SO WE CHECK THAT REVIEW NOT AFFECTED TO DB
         self.assertEqual(Review.objects.count(), initial_review_count)
         
+
+class BookmarkRestaurantTests(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='TestUser1', password='password')
+        cls.restaurant = Restaurant.objects.create(
+            owner=cls.user,
+            title="Restaurant 1",
+            rating=4.5,
+            cost_for_two=500,
+            location="Location 1",
+            address="Address 1"
+        )
+
+    def setUp(self):
+        self.client.login(username='TestUser1', password='password')
+
+    def test_bookmark_restaurant(self):
+        response = self.client.post(reverse('bookmark-restaurant', args=[self.restaurant.id]))
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(BookmarkedRestaurant.objects.filter(user=self.user, restaurant=self.restaurant).exists())
+
+    def test_bookmarked_restaurants_view(self):
+        self.client.post(reverse('bookmark-restaurant', args=[self.restaurant.id]))
+        response = self.client.get(reverse('bookmarked-restaurants'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.restaurant.title)
+
+    def test_remove_bookmark(self):
+        self.client.post(reverse('bookmark-restaurant', args=[self.restaurant.id]))
+        bookmark = BookmarkedRestaurant.objects.get(user=self.user, restaurant=self.restaurant)
+        response = self.client.post(reverse('remove-bookmark', args=[bookmark.id]))  # Updated to 'remove-bookmark'
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(BookmarkedRestaurant.objects.filter(user=self.user, restaurant=self.restaurant).exists())
+
+    def test_remove_non_existent_bookmark(self):
+        response = self.client.post(reverse('remove-bookmark', args=[999]))
+        self.assertEqual(response.status_code, 404)
+
+    def test_remove_bookmark_not_owned(self):
+        another_user = User.objects.create_user(username='AnotherUser', password='password')
+        self.client.logout()
+        self.client.login(username='AnotherUser', password='password')
+        self.client.post(reverse('bookmark-restaurant', args=[self.restaurant.id]))
+
+        self.client.logout()
+        self.client.login(username='TestUser1', password='password')
+
+        response = self.client.post(reverse('remove-bookmark', args=[1]))
+        self.assertEqual(response.status_code, 404)
+
+        
+class RestaurantFilterTests(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='owner', password='password')
+
+    def setUp(self):
+        
+        self.client.login(username='owner', password='password')
+
+        self.restaurant1 = Restaurant.objects.create(
+            owner=self.user,
+            title="Italian Bistro",
+            cost_for_two=500,
+            rating=4.5,
+            dietary_preference='vegan',
+            spotlight=True,
+            location="Downtown",
+            address="123 Italian St."
+        )
+        self.restaurant2 = Restaurant.objects.create(
+            owner=self.user,
+            title="Spicy Thai",
+            cost_for_two=300,
+            rating=4.0,
+            dietary_preference='veg',
+            spotlight=False,
+            location="Thailand",
+            address="71 Thai Rd."
+        )
+        self.restaurant3 = Restaurant.objects.create(
+            owner=self.user,
+            title="Burger House",
+            cost_for_two=700,
+            rating=5.0,
+            dietary_preference='non-veg',
+            spotlight=False,
+            location="DownTown",
+            address="101 Burger Ln."
+        )
+
+    def test_filter_by_title(self):
+        response = self.client.get(reverse('restaurant-list'), {'title': 'Burger'})
+        self.assertEqual(len(response.context['filter'].qs), 1)
+        self.assertEqual(response.context['filter'].qs.first(), self.restaurant3)
+
+    def test_filter_by_dietary_preference(self):
+        response = self.client.get(reverse('restaurant-list'), {'dietary_preference': 'vegan'})
+        print(response.context['filter'].qs)
+        self.assertEqual(len(response.context['filter'].qs), 1)
+        self.assertEqual(response.context['filter'].qs.first(), self.restaurant1)
+
+    def test_filter_by_cost_order(self):
+        response = self.client.get(reverse('restaurant-list'), {'cost_order': 'low_to_high'})
+        self.assertEqual(list(response.context['filter'].qs), [self.restaurant2, self.restaurant1, self.restaurant3])
+
+    def test_filter_by_rating_order(self):
+        response = self.client.get(reverse('restaurant-list'), {'rating_order': 'high_to_low'})
+        self.assertEqual(list(response.context['filter'].qs), [self.restaurant3, self.restaurant1, self.restaurant2])
+
+    def test_filter_by_spotlight(self):
+        response = self.client.get(reverse('restaurant-list'), {'spotlight': '1'})
+        self.assertEqual(len(response.context['filter'].qs), 1)
+        self.assertEqual(response.context['filter'].qs.first(), self.restaurant1)
+
+    def test_no_restaurants(self):
+        Restaurant.objects.all().delete()
+        response = self.client.get(reverse('restaurant-list'))
+        self.assertContains(response, "No restaurants available at the moment. Please check back later!")

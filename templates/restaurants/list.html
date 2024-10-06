@@ -6,42 +6,80 @@
 
 <div id="filter-section">
     
-    <div id="toggle-container">
-        <span class="label">Veg </span>
-        <label class="switch">  
-              
-            <input type="checkbox" id="veg-toggle" onchange="filterVegRestaurants()">
-            <span class="slider"></span>
-        </label>
-        
-    </div>
+        <form method="get">
+            {{ filter.form.search }}
+            <button type="submit"><i class="fas fa-search"></i></button><br>
+            
+            <select name="dietary_preference" onchange="this.form.submit()">
+                {% for choice in filter.form.dietary_preference.field.choices %}
+                    <option value="{{ choice.0 }}" {% if filter.form.dietary_preference.value == choice.0 %}selected{% endif %}>
+                        {{ choice.1 }}
+                    </option>
+                {% endfor %}
+            </select>
+            
+            <select name="cost_order" id="cost_order" onchange="this.form.submit()">
+                <option value="">Sort by Cost</option>
+                <option value="cost_for_two" {% if request.GET.cost_order == "cost_for_two" %}selected{% endif %}>Cost:Low to High</option>
+                <option value="-cost_for_two" {% if request.GET.cost_order == "-cost_for_two" %}selected{% endif %}>Cost:High to Low</option>
+            </select>
+
+            <select name="rating_order" id="rating_order" onchange="this.form.submit()">
+                <option value="">Sort by Rating</option>
+                <option value="rating" {% if request.GET.rating_order == "rating" %}selected{% endif %}>Rating:Low to High</option>
+                <option value="-rating" {% if request.GET.rating_order == "-rating" %}selected{% endif %}>Rating:High to Low</option>            
+            </select>
+            <div class="toggle-container">
+                <span>Spotlight</span>
+                <label class="switch">
+                    <input type="checkbox" name="spotlight" 
+                       value="1" 
+                       {% if request.GET.spotlight %}checked{% endif %}
+                       onchange="this.form.submit();"> 
+                <span class="slider round"></span>
+                </label>
+
+            </div>
+        </form>
 </div>
 
 <h2>Explore our Restaurants</h2>
 <p>Discover a variety of dining options and enjoy a delicious experience!</p>
 
+
+<div id="all-restaurants">
 {% if restaurants %}
-{% for restaurant in restaurants %}
-    <div class="restaurant-list">
-        <a href="{% url 'restaurant-detail' restaurant.id %}">
-            {% if restaurant.photos.first %}
-                <img src="{{ restaurant.photos.first.image.url }}" alt="{{ restaurant.title }} photo">
-            {% else %}
-                <img src="{% static 'img/default_restaurant.jpg' %}" alt="{{ restaurant.title }} photo">
-            {% endif %}
-            <div class='res-attributes'>
-                <h3>{{ restaurant.title }}</h3>
-                <p>Rating: <b>{{ restaurant.rating }}</b></p>
-                <p>Cost for Two:<b> Rs. {{ restaurant.cost_for_two }}</b></p>
-                <p>Location: {{ restaurant.location }}</p>
-                <p>{{ restaurant.address }}</p>
-            </div>
-        </a>
-    </div>
-{% endfor %}
+    {% for restaurant in restaurants %}
+        <div class="restaurant-list">
+            <a href="{% url 'restaurant-detail' restaurant.pk %}">
+                {% if restaurant.photos.first %}
+                    <img src="{{ restaurant.photos.first.image.url }}" alt="{{ restaurant.title }} photo">
+                {% else %}
+                    <img src="{% static 'img/default_restaurant.jpg' %}" alt="{{ restaurant.title }} photo">
+                {% endif %}
+                <div class='res-attributes'>
+                    <h3>{{ restaurant.title }}</h3>
+                    <p>Rating: <b>{{ restaurant.rating }}</b></p>
+                    <p>Cost for Two:<b> Rs. {{ restaurant.cost_for_two }}</b></p>
+                    <p>Location: {{ restaurant.location }}</p>
+                    <p>{{ restaurant.address }}</p>
+                </div>
+            </a>
+            <form action="{% url 'bookmark-restaurant' restaurant.id %}" method="post" class="bookmark-form">
+                {% csrf_token %}
+                <button type="submit" class="bookmark-btn" 
+                        {% if restaurant.id in bookmarked_restaurants %}disabled{% endif %}>
+                        <i class="fas fa-bookmark" 
+                            {% if restaurant.id in bookmarked_restaurants %}style="color: red;"{% else %}style="color: gray;"{% endif %}>
+                        </i>
+                </button>
+            </form>
+        </div>
+    {% endfor %}
 {% else %}
-<h3>No restaurants available at the moment. Please check back later!</h3>
+    <h3>No restaurants available at the moment. Please check back later!</h3>
 {% endif %}
+</div>
 
 <div class="pagination">
     <span class="step-links">

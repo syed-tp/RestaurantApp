@@ -68,8 +68,8 @@ nav ul li .dropdown li {
     }
 }
 .content {
-    margin: 20px auto;
-    padding: 20px;
+    margin: 10px auto;
+    padding: 10px;
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -167,22 +167,13 @@ h3.no-restaurants {
     width: 20px;
 }
 
-#filter-section {
-    position: relative; 
-    margin-bottom: 20px; 
-}
-
-#toggle-container {
-    position: absolute; 
-    top: 10px;
-    right: 10px; 
-}
 
 .switch {
     position: relative;
     display: inline-block;
     width: 50px; 
     height: 24px; 
+    margin-right: 30px;
 }
 
 .switch input {
@@ -429,4 +420,86 @@ input:checked + .slider:before {
     font-size: 24px;
     margin-bottom: 20px;
     color: #043a75;
+}
+
+.restaurant-list {
+    position: relative;
+}
+
+.bookmark-form {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+#filter-section {
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+#filter-section form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-start;
+}
+
+#filter-section input[type="text"],
+#filter-section select {
+    flex: 1;
+    max-width: 200px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+#filter-section input[type="text"]:focus,
+#filter-section select:focus {
+    border-color: #ff1414;
+    outline: none;
+}
+
+.toggle-container {
+    position: absolute;
+    right: 0;
+    top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+}
+
+
+.toggle-container span {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#filter-section button[type="submit"] {
+    background-color: #ffbf00;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+#filter-section button[type="submit"]:hover {
+    background-color: #ff1414;
+}
+
+#filter-section select {
+    margin-top: 5px;
+}
+
+@media screen and (max-width: 768px) {
+    #filter-section .toggle-container {
+        top: auto;
+        bottom: 10px;
+        right: 10px;
+    }
 }
