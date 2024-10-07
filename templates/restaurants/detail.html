@@ -5,6 +5,8 @@
 
 <div id="filter-section">
     <form method="get"> 
+        {{ filter.form.dish_search}}
+        <button type="submit"><i class="fas fa-search"></i></button><br>
         <select name="cuisine_type" onchange="this.form.submit()">
             {% for choice in filter.form.cuisine_type.field.choices %}
                 <option value="{{ choice.0 }}" {% if filter.form.cuisine_type.value == choice.0 %}selected{% endif %}>

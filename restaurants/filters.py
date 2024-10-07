@@ -42,7 +42,7 @@ class RestaurantFilter(django_filters.FilterSet):
 
 
 class DishFilter(django_filters.FilterSet):
-
+    dish_search = django_filters.CharFilter(field_name='name', lookup_expr='icontains')
     cuisine_type = django_filters.ChoiceFilter(choices=Dish.CUISINE_CHOICES, empty_label="Cuisine Type")
     is_veg = django_filters.BooleanFilter(widget=django_filters.widgets.BooleanWidget())
 
