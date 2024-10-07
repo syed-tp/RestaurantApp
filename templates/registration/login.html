@@ -2,14 +2,22 @@
 {% load static %}
 
 {% block content %}
-    <h2>Login</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Login</button>
-    </form>
-    <a href="{% url 'password_reset' %}">forgot password ?</a>
-    {% if form.errors %}
-        <p>Your username and password didn't match. Please try again.</p>
-    {% endif %}
+    <div class="login-container">
+        <h2>Login</h2>
+        {% if form.errors %}
+            <p>Invalid Credintials,
+                Please try again.</p>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <small class="help-text">Username</small> 
+            {{ form.username }}
+            
+            <small class="help-text">Password</small> 
+            {{ form.password }} 
+            <button type="submit">Login</button>
+        </form>
+        <a href="{% url 'password_reset' %}">Forgot password?</a>
+        
+    </div>
 {% endblock %}
