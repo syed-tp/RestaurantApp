@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="login-container">
+        <h2>Login</h2>
+        {% if form.errors %}
+            <p>Invalid Credintials,
+                Please try again.</p>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <small class="help-text">Username</small> 
+            {{ form.username }}
+            
+            <small class="help-text">Password</small> 
+            {{ form.password }} 
+            <button type="submit">Login</button>
+        </form>
+        <a href="{% url 'password_reset' %}">Forgot password?</a>
+        
+    </div>
+{% endblock %}

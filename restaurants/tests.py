@@ -10,6 +10,8 @@ from django.urls import reverse
 from django.test import TestCase
 from django.urls import reverse
 from .filters import RestaurantFilter
+from django.core import mail
+import re
 # Create your tests here.
 
 #TEST FOR MODELS
@@ -427,3 +429,62 @@ class RestaurantFilterTests(TestCase):
         Restaurant.objects.all().delete()
         response = self.client.get(reverse('restaurant-list'))
         self.assertContains(response, "No restaurants available at the moment. Please check back later!")
+
+
+import re
+from django.urls import reverse
+from django.core import mail
+from django.test import TestCase
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+class AuthTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='oldpassword123'
+        )
+
+    def test_sign_up(self):
+        response = self.client.post(reverse('signup'), {
+            'username': 'newuser',
+            'email': 'newuser@example.com',
+            'password1': 'newpassword123',
+            'password2': 'newpassword123',
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(User.objects.filter(username='newuser').exists())
+
+    def test_login(self):
+        response = self.client.post(reverse('login'), {
+            'username': 'testuser',
+            'password': 'oldpassword123',
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.wsgi_request.user.is_authenticated)
+
+    def test_logout(self):
+        self.client.login(username='testuser', password='oldpassword123')
+        response = self.client.post(reverse('logout'))  
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(response.wsgi_request.user.is_authenticated)
+
+    def test_forgot_password(self):
+        response = self.client.post(reverse('password_reset'), {
+            'email': 'test@example.com',
+        })
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(mail.outbox), 1)
+    
+    def test_change_password(self):
+        self.client.login(username='testuser', password='password123')
+        response = self.client.post(reverse('password_change'), {
+            'old_password': 'password123',
+            'new_password1': 'newpassword123',
+            'new_password2': 'newpassword123',
+        })
+        self.assertEqual(response.status_code, 302)
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.check_password('password123'))

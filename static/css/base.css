@@ -503,3 +503,129 @@ input:checked + .slider:before {
         right: 10px;
     }
 }
+
+.login-container {
+    max-width: 300px;
+    margin: 0 auto; 
+    padding: 2em;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+.login-container h2 {
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 1em;
+    color: #333;
+}
+
+.login-container p {
+    color: #e74c3c;
+    text-align: center;
+}
+
+.login-container input {
+    width: 95%; 
+    padding: 0.5em; 
+    margin-bottom: 0.5em; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); 
+    font-size: 1em; 
+}
+
+.login-container .help-text {
+    font-size: 0.85em; 
+    color: #555; 
+    margin-bottom: 1em; 
+}
+
+.login-container button[type="submit"] {
+    width: 50%; 
+    padding: 0.7em; 
+    background-color: #043a75; 
+    color: white; 
+    border: none; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    font-size: 1.1em; 
+    transition: background-color 0.3s; 
+}
+
+.login-container button[type="submit"]:hover {
+    background-color: #0465cd; 
+}
+
+.login-container a {
+    display: block; 
+    text-align: center; 
+    margin-top: 1em; 
+    color: Grey; 
+    text-decoration: none; 
+    transition: 0.2s ease; 
+}
+
+.login-container a:hover {
+    color: #ffbf00; 
+}
+
+.signup-container {
+    max-width: 600px;
+    margin: 0 auto; 
+    padding: 2em; 
+    border: 1px solid #ccc; 
+    border-radius: 8px; 
+    background-color: #f9f9f9; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    margin-bottom: 5em;
+}
+
+.signup-container h2 {
+    text-align: center; 
+    font-size: 2em; 
+    margin-bottom: 1em; 
+    color: #333; 
+}
+
+.signup-container input {
+    width: 95%; 
+    padding: 0.5em; 
+    margin-bottom: 0.5em; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); 
+    font-size: 1em; 
+}
+
+.signup-container ul, span {
+    display: none; 
+}
+
+.signup-container button[type="submit"] {
+    width: 98%; 
+    padding: 0.7em; 
+    background-color: #043a75; 
+    color: white; 
+    border: none; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    font-size: 1.1em; 
+    transition: background-color 0.3s; 
+}
+
+.signup-container button[type="submit"]:hover {
+    background-color: #0465cd; 
+}
+
+.signup-container a { 
+    margin-top: 1em; 
+    color: grey; 
+    text-decoration: none; 
+    transition: 0.2s ease; 
+}
+
+.signup-container a:hover {
+    color: #ffbf00; 
+}
