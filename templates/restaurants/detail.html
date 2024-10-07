@@ -58,7 +58,7 @@
         <a href="{% url 'add-review' restaurant.id %}">Add Review</a>
         <h2>Reviews</h2>
         <ul>
-            {% for review in restaurant.reviews.all %}
+            {% for review in reviews %}
                 <div class="review-list">
                     <li>
                         <strong>{{ review.user.username }}</strong>

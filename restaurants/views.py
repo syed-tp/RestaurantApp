@@ -10,7 +10,7 @@ from django.core.paginator import Paginator
 from django.views.generic.edit import CreateView
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import ReviewForm
+from .forms import ReviewForm, SignUpForm
 
 from django.contrib.auth.decorators import login_required
 
@@ -38,7 +38,10 @@ class RestaurantListView(ListView):
     def get_context_data(self, **kwargs: Any):
         context = super().get_context_data(**kwargs)
         context['filter'] = self.filterset
-        context['bookmarked_restaurants'] = BookmarkedRestaurant.objects.filter(user=self.request.user).values_list('restaurant_id', flat=True)
+        if self.request.user.is_authenticated:
+            context['bookmarked_restaurants'] = BookmarkedRestaurant.objects.filter(user=self.request.user).values_list('restaurant_id', flat=True)
+        else:
+            context['bookmarked_restaurants'] = []
         return context
     
 
@@ -55,6 +58,7 @@ class RestaurantDetailView(DetailView):
         self.filterset = self.filterset_class(self.request.GET, queryset=menu_items)
         context['menu_items'] = self.filterset.qs
         context['filter'] = self.filterset
+        context['reviews'] = restaurant.reviews.order_by('-id')  
         return context
     
 
@@ -97,3 +101,13 @@ def remove_bookmark(request, bookmark_id):
     bookmark = get_object_or_404(BookmarkedRestaurant, id=bookmark_id, user=request.user)
     bookmark.delete()
     return redirect('bookmarked-restaurants')
+
+def signup(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = SignUpForm()
+    return render(request, 'registration/signup.html', {'form': form})
