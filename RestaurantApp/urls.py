@@ -30,6 +30,9 @@ urlpatterns = [
     path('restaurants/', views.RestaurantListView.as_view(), name='restaurant-list'),
     path('restaurants/<int:pk>/', views.RestaurantDetailView.as_view(), name='restaurant-detail'),
     path('restaurants/<int:id>/review/', views.ReviewCreateView.as_view(), name='add-review'),
+    path('restaurants/<int:restaurant_id>/bookmark/', views.bookmark_restaurant, name='bookmark-restaurant'),
+    path('bookmarked-restaurants/', views.bookmarked_restaurants, name='bookmarked-restaurants'),
+    path('rm-bookmark/<int:bookmark_id>/', views.remove_bookmark, name='remove-bookmark'),
 
     path('admin/', admin.site.urls),
 ]

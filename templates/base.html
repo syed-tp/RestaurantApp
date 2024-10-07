@@ -21,6 +21,7 @@
                 <ul>
                     <li><a href="{% url 'restaurant-list' %}">Restaurants</a></li>
                     {% if user.is_authenticated %}
+                        <li><a href="{% url 'bookmarked-restaurants' %}">My Bookmarks</a></li>
                         <li>
                             <a href="#">{{ user.username }}</a>
                             <ul class="dropdown">

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <h2>Your Bookmarked Restaurants</h2>
+        {% for bookmark in bookmarks %}
+            <div class="restaurant-list">
+                <a href="{% url 'restaurant-detail' bookmark.restaurant.id %}">
+                    {% if bookmark.restaurant.photos.first %}
+                        <img src="{{ bookmark.restaurant.photos.first.image.url }}" alt="{{ bookmark.restaurant.title }} photo">
+                    {% else %}
+                        <img src="{% static 'img/default_restaurant.jpg' %}" alt="{{ bookmark.restaurant.title }} photo">
+                    {% endif %}
+                    <div class='res-attributes'>
+                        <h3>{{ bookmark.restaurant.title }}</h3>
+                        <p>Rating: <b>{{ bookmark.restaurant.rating }}</b></p>
+                        <p>Cost for Two:<b> Rs. {{ bookmark.restaurant.cost_for_two }}</b></p>
+                        <p>Location: {{ bookmark.restaurant.location }}</p>
+                        <p>{{ bookmark.restaurant.address }}</p>
+                    </div>
+                </a>
+                <form action="{% url 'remove-bookmark' bookmark.id %}" method="post" class="bookmark-form">
+                    {% csrf_token %}
+                    <button type="submit" class="bookmark-btn">
+                        <i class="fas fa-trash" style="color:red;"></i>  Remove
+                    </button>
+                </form>
+            </div>
+        {% empty %}
+            <p>You have no bookmarked restaurants.</p>
+            <div class="back-to-list">
+                <a href="{% url 'restaurant-list' %}"> Add Bookmarks </a>
+            </div>
+        {% endfor %}
+{% endblock %}
