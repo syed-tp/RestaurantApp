@@ -14,6 +14,12 @@
                 </option>
             {% endfor %}
         </select>
+
+        <select name="price_order" id="price_order" onchange="this.form.submit()">
+            <option value="">Sort by Cost</option>
+            <option value="price" {% if request.GET.price_order == "price" %}selected{% endif %}>Cost:Low to High</option>
+            <option value="-price" {% if request.GET.price_order == "-price" %}selected{% endif %}>Cost:High to Low</option>
+        </select>
         
         <div class="toggle-container">
             <span>Veg</span>

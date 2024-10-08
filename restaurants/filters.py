@@ -46,6 +46,14 @@ class DishFilter(django_filters.FilterSet):
     cuisine_type = django_filters.ChoiceFilter(choices=Dish.CUISINE_CHOICES, empty_label="Cuisine Type")
     is_veg = django_filters.BooleanFilter(widget=django_filters.widgets.BooleanWidget())
 
+    price_order = django_filters.OrderingFilter(
+        fields=(
+            
+            ('price', 'price'),   
+            ('-price', 'price_desc'),
+        ),
+    )
+
     class Meta:
         model = Dish
         fields = []
