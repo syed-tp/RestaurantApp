@@ -359,6 +359,58 @@ class BookmarkRestaurantTests(TestCase):
         response = self.client.post(reverse('remove-bookmark', args=[1]))
         self.assertEqual(response.status_code, 404)
 
+
+class VisitedRestaurantTests(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='TestUser1', password='password')
+        cls.restaurant = Restaurant.objects.create(
+            owner=cls.user,
+            title="Restaurant 1",
+            rating=4.5,
+            cost_for_two=500,
+            location="Location 1",
+            address="Address 1"
+        )
+
+    def setUp(self):
+        self.client.login(username='TestUser1', password='password')
+
+    def test_visit_restaurant(self):
+        response = self.client.post(reverse('visit-restaurant', args=[self.restaurant.id]))
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(VisitedRestaurant.objects.filter(user=self.user, restaurant=self.restaurant).exists())
+
+    def test_visited_restaurants_view(self):
+        self.client.post(reverse('visit-restaurant', args=[self.restaurant.id]))
+        response = self.client.get(reverse('visited-restaurants'))  # Make sure this URL is correct
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.restaurant.title)
+
+    def test_remove_visit(self):
+        self.client.post(reverse('visit-restaurant', args=[self.restaurant.id]))
+        visit = VisitedRestaurant.objects.get(user=self.user, restaurant=self.restaurant)
+        response = self.client.post(reverse('remove-visit', args=[visit.id]))  # Updated to 'remove-visit'
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(VisitedRestaurant.objects.filter(user=self.user, restaurant=self.restaurant).exists())
+
+    def test_remove_non_existent_visit(self):
+        response = self.client.post(reverse('remove-visit', args=[999]))  # Updated to 'remove-visit'
+        self.assertEqual(response.status_code, 404)
+
+    def test_remove_visit_not_owned(self):
+        another_user = User.objects.create_user(username='AnotherUser', password='password')
+        self.client.logout()
+        self.client.login(username='AnotherUser', password='password')
+        self.client.post(reverse('visit-restaurant', args=[self.restaurant.id]))
+
+        self.client.logout()
+        self.client.login(username='TestUser1', password='password')
+
+        response = self.client.post(reverse('remove-visit', args=[1]))
+        self.assertEqual(response.status_code, 404)
+
         
 class RestaurantFilterTests(TestCase):
 
