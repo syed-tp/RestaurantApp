@@ -17,6 +17,8 @@ from django.contrib.auth.decorators import login_required
 
 from .filters import RestaurantFilter, DishFilter
 
+from django.utils.decorators import method_decorator
+from .decorators import restaurant_owner_required 
 # Create your views here.
 
 
@@ -32,7 +34,7 @@ class RestaurantListView(ListView):
     filterset_class = RestaurantFilter
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().order_by('id')
         self.filterset = RestaurantFilter(self.request.GET, queryset=queryset)
         return self.filterset.qs
 
@@ -69,6 +71,10 @@ class DishCreateView(CreateView):
     fields = ['name', 'price', 'is_veg', 'image', 'cuisine_type']
     template_name = 'restaurants/dish_form.html'
 
+    @method_decorator(restaurant_owner_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['action'] = 'Add'
@@ -76,11 +82,8 @@ class DishCreateView(CreateView):
 
     def form_valid(self, form):
         restaurant = get_object_or_404(Restaurant, pk=self.kwargs['restaurant_id'])
-        if restaurant.owner == self.request.user:
-            form.instance.restaurant = restaurant
-            return super().form_valid(form)
-        else:
-            return HttpResponseForbidden()
+        form.instance.restaurant = restaurant
+        return super().form_valid(form)
         
     def get_success_url(self):
         return reverse_lazy('restaurant-detail', kwargs={'pk': self.object.restaurant.pk})
@@ -91,6 +94,10 @@ class DishUpdateView(UpdateView):
     fields = ['name', 'price', 'is_veg', 'image', 'cuisine_type']
     template_name = 'restaurants/dish_form.html'
 
+    @method_decorator(restaurant_owner_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['action'] = 'Edit'
@@ -98,10 +105,7 @@ class DishUpdateView(UpdateView):
 
     def get_queryset(self):
         restaurant = get_object_or_404(Restaurant, pk=self.kwargs['restaurant_id'])
-        if restaurant.owner == self.request.user:
-            return restaurant.menu_items.all()
-        else:
-            return Dish.objects.none()
+        return restaurant.menu_items.all()
     
     def get_success_url(self):
         return reverse_lazy('restaurant-detail', kwargs={'pk': self.object.restaurant.pk})
@@ -110,12 +114,13 @@ class DishDeleteView(DeleteView):
     model = Dish
     template_name = 'restaurants/dish_confirm_delete.html'
 
+    @method_decorator(restaurant_owner_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
     def get_queryset(self):
         restaurant = get_object_or_404(Restaurant, pk=self.kwargs['restaurant_id'])
-        if restaurant.owner == self.request.user:
-            return restaurant.menu_items.all()
-        else:
-            return Dish.objects.none()
+        return restaurant.menu_items.all()
     
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
