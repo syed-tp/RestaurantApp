@@ -432,6 +432,13 @@ input:checked + .slider:before {
     right: 10px;
 }
 
+.visit-form {
+    position: absolute;
+    
+    top: 10px;
+    right: 40px;
+}
+
 #filter-section {
     background-color: #f1f1f1;
     padding: 10px;

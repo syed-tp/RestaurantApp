@@ -41,14 +41,19 @@ urlpatterns = [
     path('restaurants/', views.RestaurantListView.as_view(), name='restaurant-list'),
     path('restaurants/<int:pk>/', views.RestaurantDetailView.as_view(), name='restaurant-detail'),
     path('restaurants/<int:id>/review/', views.ReviewCreateView.as_view(), name='add-review'),
-    path('restaurants/<int:restaurant_id>/bookmark/', views.bookmark_restaurant, name='bookmark-restaurant'),
+
 
     path('restaurant/<int:restaurant_id>/dish/add/', views.DishCreateView.as_view(), name='dish-add'),
     path('restaurant/<int:restaurant_id>/dish/<int:pk>/edit/', views.DishUpdateView.as_view(), name='dish-edit'),
     path('restaurant/<int:restaurant_id>/dish/<int:pk>/delete/', views.DishDeleteView.as_view(), name='dish-delete'),
 
+    path('restaurants/<int:restaurant_id>/bookmark/', views.bookmark_restaurant, name='bookmark-restaurant'),
     path('bookmarked-restaurants/', views.bookmarked_restaurants, name='bookmarked-restaurants'),
     path('rm-bookmark/<int:bookmark_id>/', views.remove_bookmark, name='remove-bookmark'),
+
+    path('restaurant/<int:restaurant_id>/visit/', views.visit_restaurant, name='visit-restaurant'),
+    path('visited-restaurants/', views.visited_restaurants, name='visited-restaurants'),
+    path('rm-visit/<int:visit_id>/', views.remove_visit, name='remove-visit'),
 
     path('admin/', admin.site.urls),
 ]
