@@ -12,6 +12,7 @@ from django.urls import reverse
 from .filters import RestaurantFilter
 from django.core import mail
 import re
+
 # Create your tests here.
 
 #TEST FOR MODELS
@@ -259,7 +260,6 @@ class RestaurantDetailViewTests(TestCase):
 
 
 #TEST FOR REVIEWS VIEW
-
 class ReviewCreateViewTests(TestCase):
     
     def setUp(self):
@@ -402,22 +402,21 @@ class RestaurantFilterTests(TestCase):
         )
 
     def test_filter_by_title(self):
-        response = self.client.get(reverse('restaurant-list'), {'title': 'Burger'})
+        response = self.client.get(reverse('restaurant-list'), {'search': 'Burger'})
         self.assertEqual(len(response.context['filter'].qs), 1)
         self.assertEqual(response.context['filter'].qs.first(), self.restaurant3)
 
     def test_filter_by_dietary_preference(self):
         response = self.client.get(reverse('restaurant-list'), {'dietary_preference': 'vegan'})
-        print(response.context['filter'].qs)
         self.assertEqual(len(response.context['filter'].qs), 1)
         self.assertEqual(response.context['filter'].qs.first(), self.restaurant1)
 
     def test_filter_by_cost_order(self):
-        response = self.client.get(reverse('restaurant-list'), {'cost_order': 'low_to_high'})
+        response = self.client.get(reverse('restaurant-list'), {'cost_order': 'cost_for_two'})
         self.assertEqual(list(response.context['filter'].qs), [self.restaurant2, self.restaurant1, self.restaurant3])
 
     def test_filter_by_rating_order(self):
-        response = self.client.get(reverse('restaurant-list'), {'rating_order': 'high_to_low'})
+        response = self.client.get(reverse('restaurant-list'), {'rating_order': '-rating'})
         self.assertEqual(list(response.context['filter'].qs), [self.restaurant3, self.restaurant1, self.restaurant2])
 
     def test_filter_by_spotlight(self):
@@ -430,14 +429,6 @@ class RestaurantFilterTests(TestCase):
         response = self.client.get(reverse('restaurant-list'))
         self.assertContains(response, "No restaurants available at the moment. Please check back later!")
 
-
-import re
-from django.urls import reverse
-from django.core import mail
-from django.test import TestCase
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
 
 class AuthTests(TestCase):
     def setUp(self):

@@ -110,6 +110,7 @@ class DishUpdateView(UpdateView):
     def get_success_url(self):
         return reverse_lazy('restaurant-detail', kwargs={'pk': self.object.restaurant.pk})
 
+
 class DishDeleteView(DeleteView):
     model = Dish
     template_name = 'restaurants/dish_confirm_delete.html'
@@ -130,8 +131,7 @@ class DishDeleteView(DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('restaurant-detail', kwargs={'pk': self.object.restaurant.pk})
-
-        
+ 
 
 class ReviewCreateView(LoginRequiredMixin, CreateView):
     model = Review
@@ -155,6 +155,16 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse('restaurant-detail', kwargs={'pk': self.restaurant.pk})
     
+    
+def signup(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = SignUpForm()
+    return render(request, 'registration/signup.html', {'form': form})
 
 @login_required
 def bookmark_restaurant(request, restaurant_id):
@@ -172,13 +182,3 @@ def remove_bookmark(request, bookmark_id):
     bookmark = get_object_or_404(BookmarkedRestaurant, id=bookmark_id, user=request.user)
     bookmark.delete()
     return redirect('bookmarked-restaurants')
-
-def signup(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login')
-    else:
-        form = SignUpForm()
-    return render(request, 'registration/signup.html', {'form': form})

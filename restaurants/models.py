@@ -47,6 +47,7 @@ class RestaurantPhoto(models.Model):
     def __str__(self):
         return f'Photo of {self.restaurant.title}'
     
+    
 class Dish(models.Model):
 
     CUISINE_CHOICES = [
