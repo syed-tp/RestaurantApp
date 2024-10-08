@@ -74,6 +74,18 @@
                         </i>
                 </button>
             </form>
+            <form action="{% url 'visit-restaurant' restaurant.id %}" method="post" class="visit-form">
+    {% csrf_token %}
+    <button type="submit" class="visit-btn">
+        {% if restaurant.id in visited_restaurants %}
+            <i class="fas fa-check" style="color: green;"></i> 
+            visited
+        {% else %}
+            <i class="fas fa-check-circle" style="color: gray;"></i>
+            mark as visited
+        {% endif %}
+    </button>
+</form>
         </div>
     {% endfor %}
 {% else %}

@@ -4,7 +4,7 @@ from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 
 from django.views.generic import TemplateView, ListView, DetailView
-from .models import Restaurant, RestaurantPhoto, Dish, Review, BookmarkedRestaurant
+from .models import Restaurant, RestaurantPhoto, Dish, Review, BookmarkedRestaurant, VisitedRestaurant
 
 from django.core.paginator import Paginator
 
@@ -43,8 +43,10 @@ class RestaurantListView(ListView):
         context['filter'] = self.filterset
         if self.request.user.is_authenticated:
             context['bookmarked_restaurants'] = BookmarkedRestaurant.objects.filter(user=self.request.user).values_list('restaurant_id', flat=True)
+            context['visited_restaurants'] = VisitedRestaurant.objects.filter(user=self.request.user).values_list('restaurant_id', flat=True)
         else:
             context['bookmarked_restaurants'] = []
+            context['visited_restaurants'] = []
         return context
     
 
@@ -155,7 +157,7 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse('restaurant-detail', kwargs={'pk': self.restaurant.pk})
     
-    
+
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -182,3 +184,20 @@ def remove_bookmark(request, bookmark_id):
     bookmark = get_object_or_404(BookmarkedRestaurant, id=bookmark_id, user=request.user)
     bookmark.delete()
     return redirect('bookmarked-restaurants')
+
+@login_required
+def visit_restaurant(request, restaurant_id):
+    restaurant = get_object_or_404(Restaurant, id=restaurant_id)
+    VisitedRestaurant.objects.get_or_create(user=request.user, restaurant=restaurant)
+    return redirect('restaurant-list')
+
+@login_required
+def visited_restaurants(request):
+    visits = VisitedRestaurant.objects.filter(user=request.user)
+    return render(request, 'restaurants/visited.html', {'visits': visits})
+
+@login_required
+def remove_visit(request, visit_id):
+    visit = get_object_or_404(VisitedRestaurant, id=visit_id, user=request.user)
+    visit.delete()
+    return redirect('visited-restaurants')
