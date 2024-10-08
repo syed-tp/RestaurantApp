@@ -599,7 +599,7 @@ input:checked + .slider:before {
     font-size: 1em; 
 }
 
-.signup-container ul, span {
+.signup-container ul, .signup-container span{
     display: none; 
 }
 
@@ -629,3 +629,149 @@ input:checked + .slider:before {
 .signup-container a:hover {
     color: #ffbf00; 
 }
+
+.dish-form {
+    max-width: 400px;
+    margin: 30px auto;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-field {
+    margin-bottom: 15px;
+}
+
+.form-field label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.dish-form input[type="text"],
+.dish-form input[type="number"],
+.dish-form input[type="file"],
+.dish-form select {
+    width: 95%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.dish-form input[type="text"]:focus,
+.dish-form input[type="number"]:focus,
+.dish-form input[type="file"]:focus,
+.dish-form select:focus {
+    border-color: #007BFF;
+    outline: none;
+}
+
+.dish-form button {
+    width: 100%;
+    padding: 10px;
+    font-weight: bold;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.dish-form button:hover {
+    background-color: #218838;
+}
+
+@media (max-width: 600px) {
+    .dish-form {
+        width: 90%;
+    }
+}
+
+.btn {
+    display: inline-flex; 
+    margin: 3px;
+    align-items: center;
+    justify-content: center; 
+    padding: 8px; 
+    border-radius: 5px; 
+    text-decoration: none; 
+    font-weight: bold; 
+    color: white !important; 
+    transition: background-color 0.3s; 
+}
+
+.btn-add {
+    background-color: #28a745; 
+    margin-bottom: 10px;
+}
+
+.btn-edit {
+    background-color: #eab000; 
+    width: 15px; 
+    height: 15px; 
+    border-radius: 5px; 
+}
+
+.btn-delete {
+    background-color: #dc3545; 
+    width: 15px; 
+    height: 15px; 
+    border-radius: 5px; 
+}
+
+.btn:hover {
+    opacity: 0.8; 
+}
+
+.confirmation-dialog {
+    max-width: 400px; 
+    margin: 30px auto; 
+    margin-bottom: 10em;
+    padding: 20px; 
+    border: 1px solid #ddd; 
+    border-radius: 8px; 
+    background-color: #fff; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+    text-align: center; 
+}
+
+.confirmation-dialog h2 {
+    margin-bottom: 20px; 
+    font-size: 18px; 
+    color: #333; 
+}
+
+.confirmation-dialog button {
+    padding: 10px 20px; 
+    border: none; 
+    border-radius: 5px; 
+    background-color: #dc3545; 
+    color: white; 
+    font-weight: bold; 
+    cursor: pointer; 
+    transition: background-color 0.3s; 
+    margin-right: 10px; 
+}
+
+.confirmation-dialog button:hover {
+    background-color: #c82333; 
+}
+
+.confirmation-dialog a {
+    text-decoration: none; 
+    color: #013467; 
+    font-weight: bold; 
+    transition: color 0.3s; 
+}
+
+.confirmation-dialog a:hover {
+    color: #0067ce; 
+}
+    

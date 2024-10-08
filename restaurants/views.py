@@ -1,5 +1,6 @@
 from typing import Any
 from django.db.models.query import QuerySet
+from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 
 from django.views.generic import TemplateView, ListView, DetailView
@@ -7,8 +8,8 @@ from .models import Restaurant, RestaurantPhoto, Dish, Review, BookmarkedRestaur
 
 from django.core.paginator import Paginator
 
-from django.views.generic.edit import CreateView
-from django.urls import reverse
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import ReviewForm, SignUpForm
 
@@ -16,6 +17,8 @@ from django.contrib.auth.decorators import login_required
 
 from .filters import RestaurantFilter, DishFilter
 
+from django.utils.decorators import method_decorator
+from .decorators import restaurant_owner_required 
 # Create your views here.
 
 
@@ -31,7 +34,7 @@ class RestaurantListView(ListView):
     filterset_class = RestaurantFilter
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().order_by('id')
         self.filterset = RestaurantFilter(self.request.GET, queryset=queryset)
         return self.filterset.qs
 
@@ -54,13 +57,81 @@ class RestaurantDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         restaurant = self.object
+        context['is_owner'] = restaurant.owner == self.request.user
         menu_items = restaurant.menu_items.filter(is_deleted=False)
         self.filterset = self.filterset_class(self.request.GET, queryset=menu_items)
         context['menu_items'] = self.filterset.qs
         context['filter'] = self.filterset
         context['reviews'] = restaurant.reviews.order_by('-id')  
         return context
+
+
+class DishCreateView(CreateView):
+    model = Dish
+    fields = ['name', 'price', 'is_veg', 'image', 'cuisine_type']
+    template_name = 'restaurants/dish_form.html'
+
+    @method_decorator(restaurant_owner_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['action'] = 'Add'
+        return context
+
+    def form_valid(self, form):
+        restaurant = get_object_or_404(Restaurant, pk=self.kwargs['restaurant_id'])
+        form.instance.restaurant = restaurant
+        return super().form_valid(form)
+        
+    def get_success_url(self):
+        return reverse_lazy('restaurant-detail', kwargs={'pk': self.object.restaurant.pk})
+
+
+class DishUpdateView(UpdateView):
+    model = Dish
+    fields = ['name', 'price', 'is_veg', 'image', 'cuisine_type']
+    template_name = 'restaurants/dish_form.html'
+
+    @method_decorator(restaurant_owner_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['action'] = 'Edit'
+        return context
+
+    def get_queryset(self):
+        restaurant = get_object_or_404(Restaurant, pk=self.kwargs['restaurant_id'])
+        return restaurant.menu_items.all()
+    
+    def get_success_url(self):
+        return reverse_lazy('restaurant-detail', kwargs={'pk': self.object.restaurant.pk})
+
+class DishDeleteView(DeleteView):
+    model = Dish
+    template_name = 'restaurants/dish_confirm_delete.html'
+
+    @method_decorator(restaurant_owner_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        restaurant = get_object_or_404(Restaurant, pk=self.kwargs['restaurant_id'])
+        return restaurant.menu_items.all()
+    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.is_deleted = True
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse_lazy('restaurant-detail', kwargs={'pk': self.object.restaurant.pk})
+
+        
 
 class ReviewCreateView(LoginRequiredMixin, CreateView):
     model = Review
