@@ -29,6 +29,11 @@
 </div>
 
     <h2>Menu for {{ restaurant.title }}</h2>
+    {% if is_owner %}
+        <a href="{% url 'dish-add' restaurant.id %}" class="btn btn-add">
+                    <i class="fas fa-plus"> </i> Add New Dish
+        </a>
+    {% endif %}
     {% for dish in menu_items %}
         <div class=restaurant-list>
             {% if dish.image %}
@@ -48,6 +53,14 @@
                         <img src="{% static 'img/nonveg.png' %}" alt="Non-Vegetarian" title="Non-Vegetarian">
                     {% endif %}
                 </div>
+                {% if is_owner %}
+                    <a href="{% url 'dish-edit' restaurant.id dish.id %}" class="btn btn-edit">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="{% url 'dish-delete' restaurant.id dish.id %}" class="btn btn-delete">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                {% endif %}
             </div>
         </div>
     {% empty %}
@@ -80,7 +93,7 @@
                     </li>
                 </div>
             {% empty %}
-                <li>No reviews yet.</li>
+                <p>No reviews yet.</p>
             {% endfor %}
         </ul>
     </div>

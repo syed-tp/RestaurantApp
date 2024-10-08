@@ -488,3 +488,68 @@ class AuthTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.user.refresh_from_db()
         self.assertFalse(self.user.check_password('password123'))
+
+
+class DishManagementTests(TestCase):
+    
+    def setUp(self):
+        self.owner = User.objects.create_user(
+            username='owner',
+            password='password123'
+        )
+        self.client.login(username='owner', password='password123')
+        
+        self.restaurant = Restaurant.objects.create(
+            owner=self.owner,
+            title="DishManagement",
+            cost_for_two=500,
+            rating=4.5,
+            dietary_preference='vegan',
+            spotlight=True,
+            location="Downtown",
+            address="123 Italian St."
+        )
+
+        self.dish = Dish.objects.create(
+            name='Test Dish',
+            restaurant=self.restaurant,
+            price=100.00,
+            is_veg=True,
+            cuisine_type='IF',
+        )
+
+    def test_dish_create_view(self):
+        url = reverse('dish-add', kwargs={'restaurant_id': self.restaurant.id})
+        data = {
+            'name': 'New Dish',
+            'price': 20.00,
+            'is_veg': True,
+            'cuisine_type': 'IF',
+        }
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Dish.objects.filter(name='New Dish').exists())
+    
+    def test_dish_update_view(self):
+        url = reverse('dish-edit', kwargs={'pk': self.dish.pk, 'restaurant_id': self.restaurant.id})
+        data = {
+            'name': 'Updated Dish',
+            'price': 15.00,
+            'is_veg': True,
+            'cuisine_type': 'IF',
+        }
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 302)
+        self.dish.refresh_from_db()
+        self.assertEqual(self.dish.name, 'Updated Dish') 
+
+    def test_dish_delete_view(self):
+        url = reverse('dish-delete', kwargs={'restaurant_id': self.restaurant.id, 'pk': self.dish.id})
+        response = self.client.post(url)
+
+        self.assertRedirects(response, reverse('restaurant-detail', kwargs={'pk': self.restaurant.id}))
+
+        dish_instance = Dish.objects.first()
+        self.assertTrue(dish_instance.is_deleted)
+        self.assertEqual(Dish.objects.filter(is_deleted=False).count(), 0)
+        

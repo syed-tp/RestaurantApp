@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class='dish-form'>
+    <h2>{{ action }} Dish</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-field">
+            <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+            {{ form.name }}
+        </div>
+        <div class="form-field">
+            <label for="{{ form.price.id_for_label }}">{{ form.price.label }}</label>
+            {{ form.price }}
+        </div>
+        <div class="form-field">
+            <label for="{{ form.is_veg.id_for_label }}">{{ form.is_veg.label }}</label>
+            {{ form.is_veg }}
+        </div>
+        <div class="form-field">
+            <label for="{{ form.image.id_for_label }}">{{ form.image.label }}</label>
+            {{ form.image }}
+        </div>
+        <div class="form-field">
+            <label for="{{ form.cuisine_type.id_for_label }}">{{ form.cuisine_type.label }}</label>
+            {{ form.cuisine_type }}
+        </div>
+        <button type="submit">{{ action }}</button>
+    </form>
+</div>
+
+
+{% endblock %}

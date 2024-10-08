@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="confirmation-dialog">
+    <h2>Are you sure you want to mark {{ dish.name }} as deleted?</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit">Confirm</button>
+        <a href="{% url 'restaurant-detail' dish.restaurant.id %}">Cancel</a>
+    </form>
+</div>
+
+{% endblock %}
