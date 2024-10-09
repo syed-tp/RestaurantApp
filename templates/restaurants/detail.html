@@ -75,6 +75,15 @@
 
     <div class="reviews">
         <a href="{% url 'add-review' restaurant.id %}">Add Review</a>
+        {% if messages %}
+            <p class="messages">
+                {% for message in messages %}
+                    <p class="{% if message.tags %}{{ message.tags }}{% endif %}" style="color:red;">
+                        {{ message }}
+                    <p>
+                {% endfor %}
+            <p>
+        {% endif %}
         <h2>Reviews</h2>
         <ul>
             {% for review in reviews %}
@@ -97,6 +106,16 @@
                         </span>
                         <p>{{ review.comment }}</p>
                     </li>
+                    {% if review.user == request.user %}
+                    <div class="review-actions">
+                        <a href="{% url 'edit-review' restaurant.id review.id %}" class="btn btn-edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{% url 'delete-review' restaurant.id review.id %}" class="btn btn-delete">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
             {% empty %}
                 <p>No reviews yet.</p>
