@@ -316,6 +316,7 @@ input:checked + .slider:before {
 }
 
 .review-list {
+    position: relative;
     margin-bottom: 10px;
     padding: 10px; 
     border: 1px solid #ddd; 
@@ -420,6 +421,17 @@ input:checked + .slider:before {
     font-size: 24px;
     margin-bottom: 20px;
     color: #043a75;
+}
+
+.review-actions {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.review-list:hover .review-actions {
+    display: inline-block;
 }
 
 .restaurant-list {
@@ -702,16 +714,16 @@ input:checked + .slider:before {
 }
 
 .btn {
-    display: inline-flex; 
-    margin: 3px;
-    align-items: center;
-    justify-content: center; 
-    padding: 8px; 
-    border-radius: 5px; 
-    text-decoration: none; 
-    font-weight: bold; 
+    display: inline-flex !important; 
+    margin: 3px !important;
+    align-items: center !important;
+    justify-content: center !important; 
+    padding: 8px !important; 
+    border-radius: 5px !important; 
+    text-decoration: none !important; 
+    font-weight: bold !important; 
     color: white !important; 
-    transition: background-color 0.3s; 
+    transition: background-color 0.3s !important; 
 }
 
 .btn-add {
@@ -720,10 +732,10 @@ input:checked + .slider:before {
 }
 
 .btn-edit {
-    background-color: #eab000; 
-    width: 15px; 
-    height: 15px; 
-    border-radius: 5px; 
+    background-color: #eab000 !important; 
+    width: 15px !important; 
+    height: 15px !important; 
+    border-radius: 5px !important; 
 }
 
 .btn-delete {

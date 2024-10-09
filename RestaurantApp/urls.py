@@ -40,8 +40,10 @@ urlpatterns = [
 
     path('restaurants/', views.RestaurantListView.as_view(), name='restaurant-list'),
     path('restaurants/<int:pk>/', views.RestaurantDetailView.as_view(), name='restaurant-detail'),
-    path('restaurants/<int:id>/review/', views.ReviewCreateView.as_view(), name='add-review'),
-
+    
+    path('restaurants/<int:restaurant_id>/review/', views.ReviewCreateView.as_view(), name='add-review'),
+    path('restaurant/<int:restaurant_id>/review/<int:pk>/edit', views.ReviewEditView.as_view(), name='edit-review'),
+    path('restaurant/<int:restaurant_id>/review/<int:pk>/delete', views.ReviewDeleteView.as_view(), name='delete-review'),
 
     path('restaurant/<int:restaurant_id>/dish/add/', views.DishCreateView.as_view(), name='dish-add'),
     path('restaurant/<int:restaurant_id>/dish/<int:pk>/edit/', views.DishUpdateView.as_view(), name='dish-edit'),
