@@ -158,17 +158,28 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['restaurant'] = self.restaurant
+        context['restaurant'] = get_object_or_404(Restaurant, pk=self.kwargs['restaurant_id'])
         return context
 
     def get_success_url(self):
-        return reverse('restaurant-detail', kwargs={'pk': self.restaurant.pk})
+        return reverse('restaurant-detail', kwargs={'pk': self.object.restaurant.pk})
     
 
 class ReviewEditView(LoginRequiredMixin, UpdateView):
     model = Review
     form_class = ReviewForm
     template_name = 'restaurants/review_form.html'
+
+    def get_object(self, queryset=None):
+        review = super().get_object(queryset)
+        self.restaurant = review.restaurant  
+        return review
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['restaurant'] = self.restaurant
+        return context
+    
     def get_success_url(self):
         return reverse_lazy('restaurant-detail', kwargs={'pk': self.object.restaurant.pk})
 
