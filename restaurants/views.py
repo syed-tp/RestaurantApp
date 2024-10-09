@@ -65,7 +65,8 @@ class RestaurantDetailView(DetailView):
         self.filterset = self.filterset_class(self.request.GET, queryset=menu_items)
         context['menu_items'] = self.filterset.qs
         context['filter'] = self.filterset
-        context['reviews'] = restaurant.reviews.order_by('-id')  
+        context['reviews'] = restaurant.reviews.order_by('-id')
+        context['existing_review'] = Review.objects.filter(user=self.request.user, restaurant=self.object).first()
         return context
 
 

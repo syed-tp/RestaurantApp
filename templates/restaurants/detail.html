@@ -74,7 +74,13 @@
     {% endfor %}
 
     <div class="reviews">
-        <a href="{% url 'add-review' restaurant.id %}">Add Review</a>
+        {% if existing_review %}
+            <a href="{% url 'edit-review' restaurant_id=restaurant.pk pk=existing_review.pk %}">Edit</a>
+            <a href="{% url 'delete-review' restaurant_id=restaurant.pk pk=existing_review.pk %}">Delete</a>
+        {% else %}
+            <a href="{% url 'add-review' restaurant.id %}">Add Review</a>
+        {% endif %}
+
         {% if messages %}
             <p class="messages">
                 {% for message in messages %}
@@ -122,6 +128,6 @@
             {% endfor %}
         </ul>
     </div>
-        
+
 {% endblock %}
 

@@ -8,7 +8,7 @@
         {{ form.as_p }}
         <button type="submit" class="submit-btn">Submit Review</button>
     </form>
-    <a href="{% url 'restaurant-detail' restaurant.id %}" class="back-link">    Back to Restaurant Details</a>    
+    <a href="{% url 'restaurant-detail' review.restaurant.id %}" class="back-link">Back to Restaurant Details</a>    
 </div>
 
 {% endblock %}
