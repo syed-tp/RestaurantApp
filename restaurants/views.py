@@ -19,7 +19,6 @@ from .filters import RestaurantFilter, DishFilter
 
 from django.utils.decorators import method_decorator
 from .decorators import restaurant_owner_required 
-from django.contrib import messages
 # Create your views here.
 
 
@@ -65,8 +64,7 @@ class RestaurantDetailView(DetailView):
         self.filterset = self.filterset_class(self.request.GET, queryset=menu_items)
         context['menu_items'] = self.filterset.qs
         context['filter'] = self.filterset
-        context['reviews'] = restaurant.reviews.order_by('-id')
-        context['existing_review'] = Review.objects.filter(user=self.request.user, restaurant=self.object).first()
+        context['reviews'] = restaurant.reviews.order_by('-id')  
         return context
 
 
@@ -143,15 +141,10 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
     template_name = 'restaurants/review_form.html'
 
     def dispatch(self, request, *args, **kwargs):
-        self.restaurant = get_object_or_404(Restaurant, pk=self.kwargs['restaurant_id'])
+        self.restaurant = get_object_or_404(Restaurant, pk=self.kwargs['id'])
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form): 
-        existing_review = Review.objects.filter(user=self.request.user, restaurant=self.restaurant).first()
-        if existing_review:
-            messages.warning(self.request, "You have already reviewed this restaurant.")
-            return redirect('restaurant-detail', pk=self.restaurant.pk)
-    
         form.instance.user = self.request.user
         form.instance.restaurant = self.restaurant
         return super().form_valid(form)
@@ -164,27 +157,6 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse('restaurant-detail', kwargs={'pk': self.restaurant.pk})
     
-
-class ReviewEditView(LoginRequiredMixin, UpdateView):
-    model = Review
-    form_class = ReviewForm
-    template_name = 'restaurants/review_form.html'
-    def get_success_url(self):
-        return reverse_lazy('restaurant-detail', kwargs={'pk': self.object.restaurant.pk})
-
-    def get_queryset(self):
-        return Review.objects.filter(user=self.request.user)
-
-class ReviewDeleteView(LoginRequiredMixin, DeleteView):
-    model = Review
-    template_name = 'restaurants/review_confirm_delete.html'
-
-    def get_success_url(self):
-        messages.success(self.request, "Your review has been deleted successfully.")
-        return reverse_lazy('restaurant-detail', kwargs={'pk': self.object.restaurant.pk})
-
-    def get_queryset(self):
-        return Review.objects.filter(user=self.request.user)
 
 def signup(request):
     if request.method == 'POST':
